@@ -1,6 +1,8 @@
-# flip_card
+# Flutter animation 3d
 
-A new Flutter project.
+This is a simple project just to test "3D" animations in Flutter
+
+![Alt Text](./Animation.gif)
 
 ## Getting Started
 

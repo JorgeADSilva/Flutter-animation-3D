@@ -43,100 +43,80 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Column(
-          children: [
-            Slider(
-              value: _counter,
-              onChanged: _incrementCounter,
-              min: -120,
-              max: 120,
-            ),
-            Center(
-              child: FlipWidget(
-                  key: Key("Widget"),
-                  rotation: _counter,
-                  child: Container(
-                    color: Colors.black,
-                    child: Text(
-                      "1",
-                      style: TextStyle(fontSize: 60, color: Colors.white),
-                    ),
-                  )),
-            ),
-          ],
-        ) /*Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(_counter.toString()),
-            Slider(
-              value: _counter,
-              onChanged: _incrementCounter,
-              min: -120,
-              max: 120,
-            ),
-            FlipWidget(
-                key: Key("Widget"),
-                rotation: _counter,
-                child: Container(
-                  color: Colors.black,
-                  child: Text(
-                    "1",
-                    style: TextStyle(fontSize: 60, color: Colors.white),
-                  ),
-                ))
-          ],
-        ),
-      ),*/
-        );
+        body: Container(
+      color: Colors.black,
+      child: Center(
+        child: FlipWidget(
+            key: Key("Widget"),
+            rotation: _counter,
+            child: Container(
+              color: Colors.black,
+              child: Text(
+                "1",
+                style: TextStyle(fontSize: 60, color: Colors.white),
+              ),
+            )),
+      ),
+    ));
   }
 }
 
-class FlipWidget extends StatelessWidget {
+class FlipWidget extends StatefulWidget {
   Widget child;
   double rotation;
 
   FlipWidget({required Key key, required this.child, required this.rotation})
       : super(key: key);
 
-//SEE: https://www.instagram.com/p/CRZV9E4CZAq/
+  @override
+  _FlipWidgetState createState() => _FlipWidgetState();
+}
+
+class _FlipWidgetState extends State<FlipWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 30))
+          ..repeat();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
         alignment: Alignment.center,
         children: List.generate(10, (index) {
-          final rotationCalculated =
-              2 * pi * rotation * 0.1 / 20 + (index * 0.7);
-          return Transform(
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateY(rotationCalculated)
-              ..translate(-120.0),
-            alignment: Alignment.center,
+          return AnimatedBuilder(
+            animation: _controller,
+            builder: (_, child) {
+              final rotationCalculated =
+                  2 * pi * (_controller.value * 500) * 0.1 / 20 + (index * 0.7);
+              return Transform(
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001)
+                    ..rotateY(rotationCalculated)
+                    ..translate(-120.0),
+                  alignment: Alignment.center,
+                  child: child);
+            },
             child: RotatedBox(
-                quarterTurns: 1,
-                child: Text(
-                  "Ola",
-                  style: TextStyle(fontSize: 30),
+                quarterTurns: 3,
+                child: Container(
+                  child: Text(
+                    "Jorge Silva",
+                    style:
+                        TextStyle(color: Colors.white, fontSize: 70, shadows: [
+                      Shadow(
+                          color: Colors.grey.withOpacity(1),
+                          offset: Offset(0, 2),
+                          blurRadius: 2),
+                    ]),
+                  ),
                 )),
           );
-        })
-        /*Transform(
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.01)
-            ..translate(-120)
-            ..rotateY(rotation),
-          alignment: Alignment.center,
-          child: ClipRect(
-              child: Align(
-            alignment: Alignment.bottomCenter,
-            heightFactor: 1,
-            child: child,
-          )),
-        ),*/
-        );
+        }));
   }
 }
